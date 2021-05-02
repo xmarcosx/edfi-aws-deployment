@@ -21,7 +21,7 @@ data "http" "myip" {
 
 provider "google" {
 
-  credentials = file("service.json")
+  credentials = file("../service.json")
 
   project = var.GOOGLE_CLOUD_PROJECT
   region  = "us-central1"
