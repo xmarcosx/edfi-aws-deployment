@@ -39,6 +39,22 @@ resource "google_project_service" "cloudresourcemanager" {
   service = "cloudresourcemanager.googleapis.com"
 }
 
+resource "google_project_service" "secretmanager" {
+  project  = var.GOOGLE_CLOUD_PROJECT
+  service  = "secretmanager.googleapis.com"
+}
+
+resource "google_service_account" "service_account" {
+  account_id   = "edfi-cloud-run"
+  display_name = "Ed-Fi Cloud Run Service Account"
+}
+
+resource "google_service_account_iam_member" "service_account_sql_access" {
+  service_account_id = google_service_account.service_account.name
+  role               = "roles/cloudsql.client"
+  member             = "serviceAccount:${google_service_account.service_account.email}"
+}
+
 resource "google_sql_database_instance" "master" {
   name             = "edfi-ods"
   database_version = "POSTGRES_11"
@@ -107,4 +123,30 @@ resource "null_resource" "db_setup" {
     depends_on = [
       google_sql_database.edfi_ods
     ]
+}
+
+resource "google_secret_manager_secret" "ods_password_secret" {
+  secret_id = "ods-password"
+
+  replication {
+    automatic = true
+  }
+
+  depends_on = [
+    google_project_service.secretmanager
+  ]
+}
+
+resource "google_secret_manager_secret_version" "ods_password_secret_value" {
+  secret      = google_secret_manager_secret.ods_password_secret.id
+  secret_data = var.PG_PASSWORD
+  depends_on = [
+    google_secret_manager_secret.ods_password_secret
+  ]
+}
+
+resource "google_secret_manager_secret_iam_member" "service_account_secret_access" {
+  secret_id = google_secret_manager_secret.ods_password_secret.id
+  role      = "roles/secretmanager.secretAccessor"
+  member    = "serviceAccount:${google_service_account.service_account.email}"
 }
