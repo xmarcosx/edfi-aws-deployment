@@ -14,10 +14,16 @@ This repository uses Terraform to deploy various Google Cloud resources.
 ```bash
 
 terraform init;
+
 terraform plan \
     -var="GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT" \
     -var="PG_PASSWORD=$PG_PASSWORD";
+
 terraform apply \
+    -var="GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT" \
+    -var="PG_PASSWORD=$PG_PASSWORD";
+
+terraform destroy \
     -var="GOOGLE_CLOUD_PROJECT=$GOOGLE_CLOUD_PROJECT" \
     -var="PG_PASSWORD=$PG_PASSWORD";
 

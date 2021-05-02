@@ -57,24 +57,35 @@ resource "google_sql_database_instance" "master" {
       }
     }
   }
+
+  depends_on = [
+    google_project_service.sqladmin,
+    google_project_service.cloudresourcemanager
+  ]
 }
 
-resource "google_sql_database" "EdFi_Admin" {
+resource "google_sql_database" "edfi_admin" {
   name     = "EdFi_Admin"
   instance = google_sql_database_instance.master.name
-  depends_on = ["master"]
+  depends_on = [
+    google_sql_database_instance.master
+  ]
 }
 
-resource "google_sql_database" "EdFi_Security" {
+resource "google_sql_database" "edfi_security" {
   name     = "EdFi_Security"
   instance = google_sql_database_instance.master.name
-  depends_on = ["master"]
+  depends_on = [
+    google_sql_database_instance.master
+  ]
 }
 
-resource "google_sql_database" "EdFi_Ods" {
+resource "google_sql_database" "edfi_ods" {
   name     = "EdFi_Ods"
   instance = google_sql_database_instance.master.name
-  depends_on = ["master"]
+  depends_on = [
+    google_sql_database_instance.master
+  ]
 }
 
 resource "google_sql_user" "users" {
@@ -82,15 +93,18 @@ resource "google_sql_user" "users" {
   instance = google_sql_database_instance.master.name
   host     = "localhost"
   password = var.PG_PASSWORD
-  depends_on = ["master"]
+  depends_on = [
+    google_sql_database_instance.master
+  ]
 }
 
 resource "null_resource" "db_setup" {
-
-  depends_on = ["EdFi_Admin", "EdFi_Security", "EdFi_Ods"]
-
     provisioner "local-exec" {
-        command = "database connection command goes here"
-        environment { PGPASSWORD = var.PG_PASSWORD }
+        command = "bash import_ods_data.sh ${google_sql_database_instance.master.public_ip_address}"
+        environment = { PGPASSWORD = var.PG_PASSWORD }
     }
+
+    depends_on = [
+      google_sql_database.edfi_ods
+    ]
 }
