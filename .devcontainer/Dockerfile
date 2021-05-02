@@ -5,7 +5,7 @@ ARG VARIANT="3.13"
 FROM mcr.microsoft.com/vscode/devcontainers/base:0-alpine-${VARIANT}
 
 RUN apk update \
-    && apk add --no-cache python curl which bash postgresql-client
+    && apk add --no-cache postgresql-client python3 bash
 
 RUN wget https://releases.hashicorp.com/terraform/0.15.1/terraform_0.15.1_linux_amd64.zip
 RUN unzip terraform_0.15.1_linux_amd64.zip && rm terraform_0.15.1_linux_amd64.zip
