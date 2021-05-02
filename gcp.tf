@@ -62,16 +62,19 @@ resource "google_sql_database_instance" "master" {
 resource "google_sql_database" "EdFi_Admin" {
   name     = "EdFi_Admin"
   instance = google_sql_database_instance.master.name
+  depends_on = ["master"]
 }
 
 resource "google_sql_database" "EdFi_Security" {
   name     = "EdFi_Security"
   instance = google_sql_database_instance.master.name
+  depends_on = ["master"]
 }
 
 resource "google_sql_database" "EdFi_Ods" {
   name     = "EdFi_Ods"
   instance = google_sql_database_instance.master.name
+  depends_on = ["master"]
 }
 
 resource "google_sql_user" "users" {
@@ -79,4 +82,15 @@ resource "google_sql_user" "users" {
   instance = google_sql_database_instance.master.name
   host     = "localhost"
   password = var.PG_PASSWORD
+  depends_on = ["master"]
+}
+
+resource "null_resource" "db_setup" {
+
+  depends_on = ["EdFi_Admin", "EdFi_Security", "EdFi_Ods"]
+
+    provisioner "local-exec" {
+        command = "database connection command goes here"
+        environment { PGPASSWORD = var.PG_PASSWORD }
+    }
 }
