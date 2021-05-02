@@ -15,6 +15,10 @@ variable "PG_PASSWORD" {
   type = string
 }
 
+data "http" "myip" {
+  url = "http://ipv4.icanhazip.com"
+}
+
 provider "google" {
 
   credentials = file("service.json")
@@ -46,6 +50,11 @@ resource "google_sql_database_instance" "master" {
     backup_configuration {
       enabled = true
       start_time = "08:00"
+    }
+    ip_configuration {
+      authorized_networks {
+        value = "${chomp(data.http.myip.body)}"
+      }
     }
   }
 }

@@ -1,6 +1,8 @@
 .env
 service.json
 
+.terraform.lock.hcl
+
 # Created by https://www.toptal.com/developers/gitignore/api/linux,visualstudiocode,terraform
 # Edit at https://www.toptal.com/developers/gitignore?templates=linux,visualstudiocode,terraform
 
