@@ -1,18 +1,19 @@
 # terraform-sandbox
 
-This repository uses Terraform to deploy various Google Cloud resources.
+This repository is under active development and serves as a proof of concept for using Terraform to deploy the Ed-Fi technology stack on Azure, AWS, and Google Cloud.
 
-## Create Service Account JSON
-* Under "Service account", select "New service account".
-* Give it any name you like.
-* For the Role, choose "Project -> Editor".
-* Leave the "Key Type" as JSON.
-* Click "Create" to create the key to the base of this repo as `service.json`
+This repository is designed to be opened in Visual Studio Code with the Remote - Containers extension.
+
+# Initial configuration
+Copy `.env-sample` to `.env` and set the `PGPASSWORD` variable.
+
 
 ## Azure Deployment
 
 ```bash
 
+az login;
+cd azure;
 terraform init;
 
 terraform plan \
@@ -28,8 +29,17 @@ terraform destroy \
 
 ## Google Cloud Deployment
 
+### Create Service Account JSON
+* Under "Service account", select "New service account".
+* Give it any name you like.
+* For the Role, choose "Project -> Editor".
+* Leave the "Key Type" as JSON.
+* Click "Create" to create the key to the base of this repo as `service.json`
+
+
 ```bash
 
+cd google_cloud;
 terraform init;
 
 terraform plan \
