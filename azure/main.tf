@@ -72,3 +72,14 @@ resource "azurerm_postgresql_firewall_rule" "allow_ip_sql_access" {
   start_ip_address    = "${chomp(data.http.myip.body)}"
   end_ip_address      = "${chomp(data.http.myip.body)}"
 }
+
+resource "null_resource" "db_setup" {
+    provisioner "local-exec" {
+        command = "bash import_ods_data.sh ${azurerm_postgresql_server.edfi_ods.fqdn}"
+        environment = { PGPASSWORD = var.PG_PASSWORD }
+    }
+
+    depends_on = [
+      azurerm_postgresql_database.edfi_ods_db
+    ]
+}
