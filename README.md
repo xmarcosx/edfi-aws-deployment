@@ -9,7 +9,24 @@ This repository uses Terraform to deploy various Google Cloud resources.
 * Leave the "Key Type" as JSON.
 * Click "Create" to create the key to the base of this repo as `service.json`
 
-## Deployment
+## Azure Deployment
+
+```bash
+
+terraform init;
+
+terraform plan \
+    -var="PG_PASSWORD=$PG_PASSWORD";
+
+terraform apply \
+    -var="PG_PASSWORD=$PG_PASSWORD";
+
+terraform destroy \
+    -var="PG_PASSWORD=$PG_PASSWORD";
+
+```
+
+## Google Cloud Deployment
 
 ```bash
 

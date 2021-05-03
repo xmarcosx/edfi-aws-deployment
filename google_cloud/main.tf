@@ -55,7 +55,7 @@ resource "google_service_account_iam_member" "service_account_sql_access" {
   member             = "serviceAccount:${google_service_account.service_account.email}"
 }
 
-resource "google_sql_database_instance" "master" {
+resource "google_sql_database_instance" "edfi_ods" {
   name             = "edfi-ods"
   database_version = "POSTGRES_11"
   region           = "us-central1"
@@ -80,48 +80,48 @@ resource "google_sql_database_instance" "master" {
   ]
 }
 
-resource "google_sql_database" "edfi_admin" {
+resource "google_sql_database" "edfi_admin_db" {
   name     = "EdFi_Admin"
-  instance = google_sql_database_instance.master.name
+  instance = google_sql_database_instance.edfi_ods.name
   depends_on = [
-    google_sql_database_instance.master
+    google_sql_database_instance.edfi_ods
   ]
 }
 
-resource "google_sql_database" "edfi_security" {
+resource "google_sql_database" "edfi_security_db" {
   name     = "EdFi_Security"
-  instance = google_sql_database_instance.master.name
+  instance = google_sql_database_instance.edfi_ods.name
   depends_on = [
-    google_sql_database_instance.master
+    google_sql_database_instance.edfi_ods
   ]
 }
 
-resource "google_sql_database" "edfi_ods" {
+resource "google_sql_database" "edfi_ods_db" {
   name     = "EdFi_Ods"
-  instance = google_sql_database_instance.master.name
+  instance = google_sql_database_instance.edfi_ods.name
   depends_on = [
-    google_sql_database_instance.master
+    google_sql_database_instance.edfi_ods
   ]
 }
 
 resource "google_sql_user" "users" {
   name     = "postgres"
-  instance = google_sql_database_instance.master.name
+  instance = google_sql_database_instance.edfi_ods.name
   host     = "localhost"
   password = var.PG_PASSWORD
   depends_on = [
-    google_sql_database_instance.master
+    google_sql_database_instance.edfi_ods
   ]
 }
 
 resource "null_resource" "db_setup" {
     provisioner "local-exec" {
-        command = "bash import_ods_data.sh ${google_sql_database_instance.master.public_ip_address}"
+        command = "bash import_ods_data.sh ${google_sql_database_instance.edfi_ods.public_ip_address}"
         environment = { PGPASSWORD = var.PG_PASSWORD }
     }
 
     depends_on = [
-      google_sql_database.edfi_ods
+      google_sql_database.edfi_ods_db
     ]
 }
 
