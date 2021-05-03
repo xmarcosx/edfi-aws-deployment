@@ -1,18 +1,19 @@
-# See here for image contents: https://github.com/microsoft/vscode-dev-containers/tree/v0.166.1/containers/alpine/.devcontainer/base.Dockerfile
+# [Choice] Ubuntu version: bionic, focal
+ARG VARIANT="focal"
+FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
 
-# [Choice] Alpine version: 3.13, 3.12, 3.11, 3.10
-ARG VARIANT="3.13"
-FROM mcr.microsoft.com/vscode/devcontainers/base:0-alpine-${VARIANT}
+# [Optional] Uncomment this section to install additional OS packages.
+RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
+    && apt-get -y install --no-install-recommends azure-cli postgresql-client
 
-RUN apk update \
-    && apk add --no-cache postgresql-client python3 bash
+RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+RUN apt-get install apt-transport-https ca-certificates gnupg curl -y
+RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+RUN apt-get update && apt-get install google-cloud-sdk -y
 
 RUN wget https://releases.hashicorp.com/terraform/0.15.1/terraform_0.15.1_linux_amd64.zip
 RUN unzip terraform_0.15.1_linux_amd64.zip && rm terraform_0.15.1_linux_amd64.zip
 RUN mv terraform /usr/bin/terraform
-
-RUN curl -sSL https://sdk.cloud.google.com | bash
-ENV PATH $PATH:/root/google-cloud-sdk/bin
 
 WORKDIR /home/vscode
 
