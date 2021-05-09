@@ -1,5 +1,6 @@
 provider "aws" {
     region = var.AWS_REGION
+    version = "~> 3.0"
 }
 
 module "vpc" {
@@ -44,6 +45,13 @@ module "security_group" {
             description = "External development machine"
             cidr_blocks = "${chomp(data.http.myip.body)}/32"
         },
+        {
+            from_port   = 443
+            to_port     = 443
+            protocol    = "tcp"
+            description = "Access to Ed-Fi API and Admin App"
+            cidr_blocks = ["0.0.0.0/0"]
+        }
     ]
 
 }
