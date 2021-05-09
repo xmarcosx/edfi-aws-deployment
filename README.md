@@ -27,6 +27,27 @@ terraform destroy \
 
 ```
 
+## AWS Deployment
+
+```bash
+
+cd aws;
+terraform init;
+
+terraform plan \
+    -var="AWS_REGION=$AWS_DEFAULT_REGION" \
+    -var="PG_PASSWORD=$PG_PASSWORD";
+
+terraform apply \
+    -var="AWS_REGION=$AWS_DEFAULT_REGION" \
+    -var="PG_PASSWORD=$PG_PASSWORD";
+
+terraform destroy \
+    -var="AWS_REGION=$AWS_DEFAULT_REGION" \
+    -var="PG_PASSWORD=$PG_PASSWORD";
+
+```
+
 ## Google Cloud Deployment
 
 ### Create Service Account JSON
