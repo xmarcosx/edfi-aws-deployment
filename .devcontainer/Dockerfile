@@ -11,6 +11,10 @@ RUN apt-get install apt-transport-https ca-certificates gnupg curl -y
 RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
 RUN apt-get update && apt-get install google-cloud-sdk -y
 
+RUN wget -O /home/vscode/awscliv2.zip https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+RUN unzip /home/vscode/awscliv2.zip -d /home/vscode/aws
+RUN /home/vscode/aws/aws/install
+
 RUN wget https://releases.hashicorp.com/terraform/0.15.1/terraform_0.15.1_linux_amd64.zip
 RUN unzip terraform_0.15.1_linux_amd64.zip && rm terraform_0.15.1_linux_amd64.zip
 RUN mv terraform /usr/bin/terraform

@@ -34,6 +34,11 @@ module "db" {
     create_monitoring_role                = true
     monitoring_interval                   = 60
 
+    depends_on = [
+        module.vpc,
+        module.security_group
+    ]
+
 }
 
 provider "postgresql" {
@@ -54,11 +59,19 @@ resource "postgresql_database" "edfi_security_db" {
     provider = postgresql.edfi_pg
     name     = "EdFi_Security"
 
+    depends_on = [
+        module.db
+    ]
+
 }
 
 resource "postgresql_database" "edfi_ods_db" {
 
     provider = postgresql.edfi_pg
     name     = "EdFi_Ods"
+
+    depends_on = [
+        module.db
+    ]
 
 }
