@@ -1,6 +1,5 @@
 provider "aws" {
     region = var.AWS_REGION
-    version = "~> 3.0"
 }
 
 module "vpc" {
@@ -16,8 +15,12 @@ module "vpc" {
     private_subnets  = ["10.99.3.0/24", "10.99.4.0/24", "10.99.5.0/24"]
     database_subnets = ["10.99.7.0/24", "10.99.8.0/24", "10.99.9.0/24"]
 
+    create_database_subnet_group           = true
+    create_database_subnet_route_table     = true
+    create_database_internet_gateway_route = true
+
     enable_dns_hostnames = true
-    create_database_nat_gateway_route = true
+    enable_dns_support   = true
 
 }
 
@@ -50,8 +53,37 @@ module "security_group" {
             to_port     = 443
             protocol    = "tcp"
             description = "Access to Ed-Fi API and Admin App"
-            cidr_blocks = ["0.0.0.0/0"]
+            cidr_blocks = "0.0.0.0/0"
         }
     ]
 
 }
+
+resource "aws_ecr_repository" "main" {
+    name                 = "edfi"
+    image_tag_mutability = "MUTABLE"
+}
+
+resource "aws_ecr_lifecycle_policy" "main" {
+    repository = aws_ecr_repository.main.name
+    
+    policy = jsonencode({
+    rules = [{
+            rulePriority = 1
+            description  = "keep last 10 images"
+            action       = {
+            type = "expire"
+        }
+        selection       = {
+            tagStatus   = "any"
+            countType   = "imageCountMoreThan"
+            countNumber = 10
+        }
+    }]
+    })
+}
+
+resource "aws_ecs_cluster" "main" {
+    name = "edfi-cluster"
+}
+

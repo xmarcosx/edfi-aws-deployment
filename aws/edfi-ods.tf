@@ -35,3 +35,30 @@ module "db" {
     monitoring_interval                   = 60
 
 }
+
+provider "postgresql" {
+
+    alias           = "edfi_pg"
+    host            = module.db.db_instance_address
+    port            = 5432
+    database        = "EdFi_Admin"
+    username        = "postgres"
+    password        = var.PG_PASSWORD
+    sslmode         = "require"
+    connect_timeout = 15
+
+}
+
+resource "postgresql_database" "edfi_security_db" {
+
+    provider = postgresql.edfi_pg
+    name     = "EdFi_Security"
+
+}
+
+resource "postgresql_database" "edfi_ods_db" {
+
+    provider = postgresql.edfi_pg
+    name     = "EdFi_Ods"
+
+}
