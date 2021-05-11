@@ -87,3 +87,11 @@ resource "aws_ecs_cluster" "main" {
     name = "edfi-cluster"
 }
 
+resource "aws_secretsmanager_secret" "ods_password" {
+    name = "ods-password"
+}
+
+resource "aws_secretsmanager_secret_version" "ods_password_value" {
+    secret_id     = aws_secretsmanager_secret.ods_password.id
+    secret_string = var.PG_PASSWORD
+}
