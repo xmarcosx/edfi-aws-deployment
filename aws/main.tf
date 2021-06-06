@@ -83,9 +83,9 @@ resource "aws_ecr_lifecycle_policy" "main" {
     })
 }
 
-resource "aws_ecs_cluster" "main" {
-    name = "edfi-cluster"
-}
+# resource "aws_ecs_cluster" "main" {
+#     name = "edfi-cluster"
+# }
 
 resource "aws_secretsmanager_secret" "ods_password" {
     name = "ods-password"

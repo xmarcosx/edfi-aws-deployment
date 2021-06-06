@@ -1,21 +1,20 @@
-# resource "aws_ecs_task_definition" "main" {
+resource "aws_apprunner_service" "edfi_api" {
+    service_name = "edfi_api"
 
-#     network_mode             = "awsvpc"
-#     requires_compatibilities = ["FARGATE"]
-#     cpu                      = 2
-#     memory                   = 2048
-#     execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-#     task_role_arn            = aws_iam_role.ecs_task_role.arn
-#     container_definitions = jsonencode([{
-#         name        = "${var.name}-container-${var.environment}"
-#         image       = "${var.container_image}:latest"
-#         essential   = true
-#         environment = var.container_environment
-#         portMappings = [{
-#             protocol      = "tcp"
-#             containerPort = var.container_port
-#             hostPort      = var.container_port
-#         }]
-#     }])
+    source_configuration {
+        image_repository {
+            image_configuration {
+                port = "8000"
+                runtime_environment_variables {
+                    rds_endpoint = ""
+                }
+            }
+            image_identifier      = "${var.container_image}:latest"
+            image_repository_type = "ECR"
+        }
+    }
 
-# }
+    tags = {
+        Name = "edfi-api-apprunner-service"
+    }
+}

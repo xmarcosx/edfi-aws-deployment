@@ -29,16 +29,22 @@ terraform destroy \
 
 ## AWS Deployment
 
+Create an AWS ECR repository with the name *edfi*. 
+
 ```bash
 
 cd aws;
 terraform init;
 
+# deploy Ed-Fi ODS
+
 terraform plan \
+    -target="postgresql_database.edfi_ods_db" \
     -var="AWS_REGION=$AWS_DEFAULT_REGION" \
     -var="PG_PASSWORD=$PG_PASSWORD";
 
 terraform apply \
+    -target="postgresql_database.edfi_ods_db" \
     -var="AWS_REGION=$AWS_DEFAULT_REGION" \
     -var="PG_PASSWORD=$PG_PASSWORD";
 
