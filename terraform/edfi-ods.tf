@@ -8,7 +8,7 @@ module "db" {
     engine               = "postgres"
     engine_version       = "11.11"
     family               = "postgres11"
-    instance_class       = "db.m3.medium"
+    instance_class       = "db.m5.large"
 
     allocated_storage     = 20
     max_allocated_storage = 100

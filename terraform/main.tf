@@ -7,7 +7,7 @@ module "vpc" {
     source  = "terraform-aws-modules/vpc/aws"
     version = "~> 3"
 
-    name = "edfi"
+    name = "edfi-vpc"
     cidr = "10.99.0.0/18"
 
     azs              = ["${var.AWS_REGION}a", "${var.AWS_REGION}b", "${var.AWS_REGION}c"]
@@ -29,7 +29,7 @@ module "security_group" {
     source  = "terraform-aws-modules/security-group/aws"
     version = "~> 4"
 
-    name        = "edfi"
+    name        = "edfi-security-group"
     description = "Ed-Fi security group"
     vpc_id      = module.vpc.vpc_id
 
@@ -60,7 +60,7 @@ module "security_group" {
 }
 
 resource "aws_ecr_repository" "main" {
-    name                 = "edfi"
+    name                 = "edfi-ecr"
     image_tag_mutability = "MUTABLE"
 }
 
@@ -82,10 +82,6 @@ resource "aws_ecr_lifecycle_policy" "main" {
     }]
     })
 }
-
-# resource "aws_ecs_cluster" "main" {
-#     name = "edfi-cluster"
-# }
 
 resource "aws_secretsmanager_secret" "ods_password" {
     name = "ods-password"
