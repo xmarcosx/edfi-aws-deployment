@@ -59,13 +59,37 @@ module "security_group" {
 
 }
 
-resource "aws_ecr_repository" "main" {
-    name                 = "edfi-ecr"
+resource "aws_ecr_repository" "edfi-api-ecr" {
+    name                 = "edfi-api"
     image_tag_mutability = "MUTABLE"
 }
 
-resource "aws_ecr_lifecycle_policy" "main" {
-    repository = aws_ecr_repository.main.name
+resource "aws_ecr_lifecycle_policy" "edfi-api-ecr" {
+    repository = aws_ecr_repository.edfi-api-ecr.name
+    
+    policy = jsonencode({
+    rules = [{
+            rulePriority = 1
+            description  = "keep last 10 images"
+            action       = {
+            type = "expire"
+        }
+        selection       = {
+            tagStatus   = "any"
+            countType   = "imageCountMoreThan"
+            countNumber = 10
+        }
+    }]
+    })
+}
+
+resource "aws_ecr_repository" "edfi-admin-app-ecr" {
+    name                 = "edfi-admin-app"
+    image_tag_mutability = "MUTABLE"
+}
+
+resource "aws_ecr_lifecycle_policy" "edfi-admin-app-ecr" {
+    repository = aws_ecr_repository.edfi-admin-app-ecr.name
     
     policy = jsonencode({
     rules = [{
