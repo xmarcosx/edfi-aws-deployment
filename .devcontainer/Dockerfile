@@ -4,12 +4,7 @@ FROM mcr.microsoft.com/vscode/devcontainers/base:0-${VARIANT}
 
 # [Optional] Uncomment this section to install additional OS packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends azure-cli postgresql-client
-
-RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
-RUN apt-get install apt-transport-https ca-certificates gnupg curl -y
-RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-RUN apt-get update && apt-get install google-cloud-sdk -y
+    && apt-get -y install --no-install-recommends postgresql-client
 
 RUN wget -O /home/vscode/awscliv2.zip https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
 RUN unzip /home/vscode/awscliv2.zip -d /home/vscode/aws
